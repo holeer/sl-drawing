@@ -21,6 +21,7 @@ class DrawingModel(nn.Module):
             logit.append(y.argmax().item())
             # y[y >= self.threshold] = 1
             # y[y < self.threshold] = 0
+        logit = torch.FloatTensor(logit).to(self.device)
         return logit
 
     def loss(self, logit, label):
@@ -28,8 +29,6 @@ class DrawingModel(nn.Module):
         #     logit.extend([0] * (len(label) - len(logit)))
         # elif len(logit) > len(label):
         #     logit.pop()
-        logit = torch.FloatTensor(logit).to(self.device)
-        label = torch.FloatTensor(label).to(self.device)
         loss_value = self.loss_func(logit, label).requires_grad_()
         return loss_value
 

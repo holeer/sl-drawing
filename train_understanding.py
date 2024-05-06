@@ -10,7 +10,7 @@ import utils
 from tqdm import tqdm
 import time
 
-num_classes = utils.get_classes_num(config.label_file)
+num_classes = len(utils.get_vocabulary(config.label_file))
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
@@ -32,6 +32,7 @@ def train(model, train_iter, test_iter):
             optimizer.zero_grad()
             logit = model(features)
             labels = [i.item() for i in labels]
+            labels = torch.FloatTensor(labels).to(device)
             loss = model.loss(logit, labels)
             loss.backward()
             optimizer.step()
@@ -69,11 +70,10 @@ def valid(model, data_iter):
         features, labels = batch
         logit = model(features).to(device)
         labels = [i.item() for i in labels]
+        labels = torch.FloatTensor(labels).to(device)
         loss = model.loss(logit, labels)
         avg_loss += loss.item()
-        logit = torch.FloatTensor(logit).to(device)
-        label = torch.FloatTensor(labels).to(device)
-        corrects += (logit == label).sum()
+        corrects += (logit == labels).sum()
 
     avg_loss /= len(data_iter)
     accuracy = corrects / (len(data_iter) * len(labels))

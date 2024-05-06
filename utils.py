@@ -4,9 +4,9 @@ import csv
 import cv2
 import numpy as np
 import os
+import shutil
 from tqdm import tqdm
 import pandas as pd
-import easyocr
 from PIL import Image
 from config import config
 import torchvision.transforms as transforms
@@ -15,7 +15,8 @@ import torchvision.models as models
 from torch.autograd import Variable
 from transformers import BertTokenizer, BertModel
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+# device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device("cpu")
 transform_list = [transforms.ToTensor(),
                   transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                        std=[0.229, 0.224, 0.225])]
@@ -28,22 +29,32 @@ res_model.eval()
 tokenizer = BertTokenizer.from_pretrained("model/bert-base-chinese/")
 bert_model = BertModel.from_pretrained("model/bert-base-chinese/")
 
-# 创建reader对象
-reader = easyocr.Reader(['ch_sim', 'en'])
-
 shoudong_x = [26, 643, 1268, 2063, 2233, 2383, 2666, 2835, 2986, 3268, 3438, 3590, 3873, 4041, 4328]
 shoudong_y = [33, 150]
 
 
-def get_classes_num(file):
+def get_vocabulary(file):
     with open(file, encoding='utf-8', errors='ignore') as fp:
         lines = fp.readlines()
         lines = [l.strip() for l in lines]
-    return len(lines)
+    return lines
+
+
+def onehot_label(vocabulary, label):
+    label_onehot = [0 for _ in range(len(vocabulary))]
+    index = vocabulary.index(label)
+    label_onehot[index] = 1
+    return label_onehot
 
 
 def split_bottom_bar(src):
-    feature_list = []
+    if not os.path.exists(config.temp_dir):
+        os.makedirs(config.temp_dir)
+    else:
+        shutil.rmtree(config.temp_dir)
+        os.makedirs(config.temp_dir)
+
+    cell_list = []
     # 读取彩色图像
     raw = cv2.imread(src, 1)
     # 灰度图片
@@ -111,60 +122,11 @@ def split_bottom_bar(src):
                 x1 = int(x_point_arr[j])
                 x2 = int(x_point_arr[j + 1])
                 cell = raw[y1:y2, x1:x2]
-                # 读取文字
-                result = reader.readtext(cell, canvas_size=4096)
-                word_list = []
-                for r in result:
-                    word_list.append(r[1])
-                content = ''.join(word_list).replace(' ', '')
-                inputs = tokenizer(content, return_tensors="pt")
-                text_output = bert_model(**inputs)[1]
 
-                cv2.imwrite('temp/temp.png', cell)
-                img = Image.open('temp/temp.png')
-                img = img.resize((224, 224))
-                pic = img_to_tensor(img).resize_(1, 3, 224, 224).to(device)
-                pic_output = res_model(Variable(pic).to(device)).to(device)
                 # cv2.imshow("sub_pic_" + str(j), cell)
                 # cv2.waitKey(0)
                 # cv2.destroyAllWindows()
-                feature = torch.cat((text_output, pic_output), 1)
-                feature_list.append(feature)
-        if 'train' in src and len(feature_list) != 14:
-            feature_list.clear()
-            # 循环y坐标，x坐标分割表格
-            for i in range(len(shoudong_y) - 1):
-                for j in range(len(shoudong_x) - 1):
-                    # 在分割时，第一个参数为y坐标，第二个参数为x坐标
-                    y1 = int(shoudong_y[i])
-                    y2 = int(shoudong_y[i + 1])
-                    x1 = int(shoudong_x[j])
-                    x2 = int(shoudong_x[j + 1])
-                    cell = raw[y1:y2, x1:x2]
-                    # 读取文字
-                    result = reader.readtext(cell, canvas_size=4096)
-                    word_list = []
-                    for r in result:
-                        word_list.append(r[1])
-                    content = ''.join(word_list).replace(' ', '')
-                    inputs = tokenizer(content, return_tensors="pt")
-                    text_output = bert_model(**inputs)[1]
-
-                    cv2.imwrite('temp/temp.png', cell)
-                    img = Image.open('temp/temp.png')
-                    img = img.resize((224, 224))
-                    pic = img_to_tensor(img).resize_(1, 3, 224, 224).to(device)
-                    pic_output = res_model(Variable(pic).to(device)).to(device)
-                    # cv2.imshow("sub_pic_" + str(j), cell)
-                    # cv2.waitKey(0)
-                    # cv2.destroyAllWindows()
-                    feature = torch.cat((text_output, pic_output), 1)
-                    feature_list.append(feature)
-        if 'test' in src and len(feature_list) != 13:
-            print(src)
-        return feature_list
-    else:
-        return []
+                cv2.imwrite(config.temp_dir + str(j) + '.png', cell)
 
 
 def get_bottom(src, out_path):
@@ -183,8 +145,68 @@ def get_bottom(src, out_path):
     # cv2.destroyAllWindows()
 
 
+def get_features(drawing, content, is_train=True):
+    img = Image.open(drawing)
+    img = img.resize((224, 224))
+    pic = img_to_tensor(img).resize_(1, 3, 224, 224).to(device)
+    pic_feature = res_model(Variable(pic).to(device)).to(device)
+
+    if is_train:
+        if type(content) == 'str' and len(content) > 0:
+            inputs = tokenizer(content, return_tensors="pt")
+            text_feature = bert_model(**inputs)[1].to(device)
+        else:
+            text_feature = torch.zeros(1, config.bert_embedding).to(device)
+        out = torch.cat((pic_feature, text_feature), dim=1).squeeze()
+    else:
+        if len(content) > 0:
+            inputs = tokenizer(content, return_tensors="pt")
+            text_feature = bert_model(**inputs)[1].to(device)
+        else:
+            text_feature = torch.zeros(1, config.bert_embedding).to(device)
+        print(text_feature)
+        print(pic_feature)
+        out = torch.cat((pic_feature, text_feature), dim=1)
+    return out
+
+
+# 计算参数量与可训练参数量
+def get_parameter_number(model):
+    total_num = sum(p.numel() for p in model.parameters())
+    trainable_num = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    f = '-----%(num)e------%(train)e' % {'num': total_num, 'train': trainable_num}
+    print(f)
+    return {'Total': total_num, 'Trainable': trainable_num}
+
+
 if __name__ == '__main__':
     pass
+    # from api_call import baidu_ocr, baidu_api
+    # token = baidu_ocr.fetch_token()
+    # img_list = os.listdir('label/')
+    # img_list.sort(key=lambda x: int(x.split('.')[0]))
+    # f = open('data.csv', 'w', encoding='utf-8', newline='')
+    # cw = csv.writer(f)
+    # cw.writerow(['drawing', 'content', 'label'])
+    # for i in tqdm(img_list):
+    #     texts, probabilities = baidu_ocr.ocr(token, 'label/' + i)
+    #     content = ''.join(texts)
+    #     drawing = 'dataset/img/' + i
+    #     cw.writerow([drawing, content, ''])
+    # f.close()
+
+    # f = open('data_new.csv', 'w', encoding='utf-8', newline='')
+    # cw = csv.writer(f)
+    # with open('dataset/data.csv', 'r', encoding='utf-8') as f:
+    #     reader = csv.reader(f)
+    #     for row in reader:
+    #         if row[1] == '设计' or row[1] == '审核' or row[1] == '复核' or row[1] == '图号' or row[1] == '日期':
+    #             cw.writerow([row[0], row[1], '属性'])
+    #         else:
+    #             cw.writerow([row[0], row[1], row[2]])
+
+    # vocabulary = get_vocabulary(config.label_file)
+    # print(onehot_label(vocabulary, '图名'))
 
     # 分割底部栏
     # split_bottom_bar('dataset/test/img/0.png')

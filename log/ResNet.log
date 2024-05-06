@@ -1,0 +1,67 @@
+2022-10-18 16:57:46,443 - INFO - * Training epoch 1:
+2022-10-18 16:58:50,687 - INFO - -> Training time: 64.2431s, loss = 1.8916
+2022-10-18 16:58:55,389 - INFO - -> Valid time: 4.7021s, loss = 3.7707, accuracy: 32.4074%
+2022-10-18 16:58:55,957 - INFO - saved the best model in epoch 1.
+2022-10-18 16:58:55,957 - INFO - * Training epoch 2:
+2022-10-18 16:59:57,153 - INFO - -> Training time: 61.1834s, loss = 1.7263
+2022-10-18 17:00:01,980 - INFO - -> Valid time: 4.8278s, loss = 3.0101, accuracy: 38.8889%
+2022-10-18 17:00:02,503 - INFO - saved the best model in epoch 2.
+2022-10-18 17:00:02,504 - INFO - * Training epoch 3:
+2022-10-18 17:01:03,764 - INFO - -> Training time: 61.2540s, loss = 1.4243
+2022-10-18 17:01:08,699 - INFO - -> Valid time: 4.9240s, loss = 2.3074, accuracy: 23.1481%
+2022-10-18 17:01:08,700 - INFO - * Training epoch 4:
+2022-10-18 17:02:10,471 - INFO - -> Training time: 61.7504s, loss = 1.0485
+2022-10-18 17:02:15,327 - INFO - -> Valid time: 4.8568s, loss = 2.6244, accuracy: 34.2593%
+2022-10-18 17:02:15,332 - INFO - * Training epoch 5:
+2022-10-18 17:03:17,663 - INFO - -> Training time: 62.3295s, loss = 0.7107
+2022-10-18 17:03:22,472 - INFO - -> Valid time: 4.8044s, loss = 2.0877, accuracy: 56.4815%
+2022-10-18 17:03:22,965 - INFO - saved the best model in epoch 5.
+2022-10-18 17:03:22,965 - INFO - * Training epoch 6:
+2022-10-18 17:04:25,371 - INFO - -> Training time: 62.4063s, loss = 0.4918
+2022-10-18 17:04:30,122 - INFO - -> Valid time: 4.7380s, loss = 1.9144, accuracy: 51.8519%
+2022-10-18 17:04:30,122 - INFO - * Training epoch 7:
+2022-10-18 17:05:33,104 - INFO - -> Training time: 62.9766s, loss = 0.3228
+2022-10-18 17:05:38,086 - INFO - -> Valid time: 4.9791s, loss = 2.4237, accuracy: 54.6296%
+2022-10-18 17:05:38,090 - INFO - * Training epoch 8:
+2022-10-18 17:06:40,796 - INFO - -> Training time: 62.7054s, loss = 0.2226
+2022-10-18 17:06:45,549 - INFO - -> Valid time: 4.7536s, loss = 2.5243, accuracy: 52.7778%
+2022-10-18 17:06:45,557 - INFO - * Training epoch 9:
+2022-10-18 17:07:51,383 - INFO - -> Training time: 65.8153s, loss = 0.1818
+2022-10-18 17:07:57,562 - INFO - -> Valid time: 6.1781s, loss = 2.4360, accuracy: 22.2222%
+2022-10-18 17:07:57,563 - INFO - * Training epoch 10:
+2022-10-18 17:09:05,796 - INFO - -> Training time: 68.2255s, loss = 0.1468
+2022-10-18 17:09:10,654 - INFO - -> Valid time: 4.8578s, loss = 2.4755, accuracy: 60.1852%
+2022-10-18 17:09:11,215 - INFO - saved the best model in epoch 10.
+2022-10-18 17:09:11,219 - INFO - * Training epoch 11:
+2022-10-18 17:10:13,573 - INFO - -> Training time: 62.3387s, loss = 0.1318
+2022-10-18 17:10:18,388 - INFO - -> Valid time: 4.8156s, loss = 2.2694, accuracy: 38.8889%
+2022-10-18 17:10:18,388 - INFO - * Training epoch 12:
+2022-10-18 17:11:21,069 - INFO - -> Training time: 62.6804s, loss = 0.1171
+2022-10-18 17:11:26,156 - INFO - -> Valid time: 5.0791s, loss = 2.1845, accuracy: 61.1111%
+2022-10-18 17:11:26,702 - INFO - saved the best model in epoch 12.
+2022-10-18 17:11:26,704 - INFO - * Training epoch 13:
+2022-10-18 17:12:29,579 - INFO - -> Training time: 62.8745s, loss = 0.1051
+2022-10-18 17:12:34,454 - INFO - -> Valid time: 4.8586s, loss = 2.2567, accuracy: 29.6296%
+2022-10-18 17:12:34,454 - INFO - * Training epoch 14:
+2022-10-18 17:13:36,488 - INFO - -> Training time: 62.0321s, loss = 0.0943
+2022-10-18 17:13:41,193 - INFO - -> Valid time: 4.7051s, loss = 2.2241, accuracy: 49.0741%
+2022-10-18 17:13:41,193 - INFO - * Training epoch 15:
+2022-10-18 17:14:43,872 - INFO - -> Training time: 62.6758s, loss = 0.0870
+2022-10-18 17:14:48,544 - INFO - -> Valid time: 4.6719s, loss = 2.6275, accuracy: 55.5556%
+2022-10-18 17:14:48,544 - INFO - * Training epoch 16:
+2022-10-18 17:15:51,156 - INFO - -> Training time: 62.5934s, loss = 0.0818
+2022-10-18 17:15:55,899 - INFO - -> Valid time: 4.7407s, loss = 2.4169, accuracy: 61.1111%
+2022-10-18 17:15:56,392 - INFO - saved the best model in epoch 16.
+2022-10-18 17:15:56,392 - INFO - * Training epoch 17:
+2022-10-18 17:16:58,153 - INFO - -> Training time: 61.7570s, loss = 0.0796
+2022-10-18 17:17:03,111 - INFO - -> Valid time: 4.9523s, loss = 2.4828, accuracy: 37.9630%
+2022-10-18 17:17:03,111 - INFO - * Training epoch 18:
+2022-10-18 17:18:06,312 - INFO - -> Training time: 63.1906s, loss = 0.0776
+2022-10-18 17:18:11,137 - INFO - -> Valid time: 4.8099s, loss = 2.3743, accuracy: 43.5185%
+2022-10-18 17:18:11,137 - INFO - * Training epoch 19:
+2022-10-18 17:19:14,008 - INFO - -> Training time: 62.8705s, loss = 0.0760
+2022-10-18 17:19:18,955 - INFO - -> Valid time: 4.9469s, loss = 2.7834, accuracy: 37.0370%
+2022-10-18 17:19:18,955 - INFO - * Training epoch 20:
+2022-10-18 17:20:21,844 - INFO - -> Training time: 62.8883s, loss = 0.0757
+2022-10-18 17:20:26,886 - INFO - -> Valid time: 5.0384s, loss = 1.4730, accuracy: 65.7407%
+2022-10-18 17:20:27,443 - INFO - saved the best model in epoch 20.
